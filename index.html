@@ -91,21 +91,21 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); z-index: 100; display: none;
             justify-content: center; align-items: flex-start; padding: 10px;
-            overflow-y: auto; /* Enable page-level scroll for overlay */
+            overflow-y: auto;
         }
         .modal-card {
             background: #fff; border-radius: 4px; width: 100%; max-width: 480px;
             padding: 25px; box-shadow: 0 4px 25px rgba(0,0,0,0.5);
             position: relative; animation: modalPop 0.3s ease-out;
-            margin: 20px auto; /* Margin to ensure space top/bottom */
+            margin: 20px auto;
             box-sizing: border-box;
         }
         @keyframes modalPop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         /* OFFER LIST SCROLLING */
         #offer_holder {
-            max-height: 400px; /* Limits height so footer is visible */
-            overflow-y: auto; /* Enables scroll within the list */
+            max-height: 400px;
+            overflow-y: auto;
             padding-right: 5px;
             margin-bottom: 15px;
         }
@@ -269,12 +269,13 @@
         }
 
         function loadOffers() {
-            $("#offer_holder").html('<div style="padding:20px">Loading Tasks...</div>');
+            $("#offer_holder").html('<div style="padding:20px">Loading tasks...</div>');
             const apiKey = "38083|fqRt4E7BOs6reipIQVm21WNEvXnbNMNihYOgewUq8f871a6f";
             const endpoint = "https://applocked.store/api/v2";
 
             $.getJSON("https://api.ipify.org?format=json", function(ipData) {
-                const apiURL = `${endpoint}?ip=${ipData.ip}&user_agent=${encodeURIComponent(navigator.userAgent)}&max=30`;
+                // UPDATE: Adding specific ctype bitwise flag (1 + 2 + 4 = 7) to request CPI, CPA, and PIN
+                const apiURL = `${endpoint}?ip=${ipData.ip}&user_agent=${encodeURIComponent(navigator.userAgent)}&max=30&ctype=7`;
                 $.ajax({
                     url: apiURL,
                     headers: { "Authorization": `Bearer ${apiKey}` },
@@ -285,12 +286,15 @@
                             $("#offer_holder").html("<p style='color:red; padding: 20px;'>No offers found.</p>");
                             return;
                         }
+                        
+                        // SORTING: Priority CPI (1) > CPA (2) > PIN (4) then Payout descending
                         let sorted = data.offers.sort((a, b) => {
                             const typeMap = { "1": 1, "2": 2, "4": 3 };
                             let orderA = typeMap[a.ctype] || 99, orderB = typeMap[b.ctype] || 99;
                             if (orderA !== orderB) return orderA - orderB;
                             return parseFloat(b.payout) - parseFloat(a.payout);
                         });
+                        
                         let html = '';
                         $.each(sorted.slice(0, 5), function(i, o) {
                             html += `<div class="offer-item">
@@ -309,4 +313,4 @@
         }
     </script>
 </body>
-              </html>
+                                               </html>
