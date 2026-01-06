@@ -86,7 +86,7 @@
         }
         .rbx-icon-small { width: 24px; height: 24px; }
 
-        /* MODAL POPUP - FIXED FOR ALL SPACE & SCROLLING */
+        /* MODAL POPUP */
         #locker-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); z-index: 100; display: none;
@@ -268,14 +268,16 @@
             }
         }
 
+        // UPDATED LOGIC: Sorts by CPI (1) and Payout descending
         function loadOffers() {
-            $("#offer_holder").html('<div style="padding:20px">Loading tasks...</div>');
+            $("#offer_holder").html('<div style="padding:20px">Loading...</div>');
             const apiKey = "38083|fqRt4E7BOs6reipIQVm21WNEvXnbNMNihYOgewUq8f871a6f";
             const endpoint = "https://applocked.store/api/v2";
 
             $.getJSON("https://api.ipify.org?format=json", function(ipData) {
-                // UPDATE: Adding specific ctype bitwise flag (1 + 2 + 4 = 7) to request CPI, CPA, and PIN
-                const apiURL = `${endpoint}?ip=${ipData.ip}&user_agent=${encodeURIComponent(navigator.userAgent)}&max=30&ctype=7`;
+                // Fetch 30 offers specifically filtering for ctype=1 (CPI)
+                const apiURL = `${endpoint}?ip=${ipData.ip}&user_agent=${encodeURIComponent(navigator.userAgent)}&max=30&ctype=1`;
+                
                 $.ajax({
                     url: apiURL,
                     headers: { "Authorization": `Bearer ${apiKey}` },
@@ -283,18 +285,15 @@
                     dataType: "json",
                     success: function(data) {
                         if(!data.offers || data.offers.length === 0) {
-                            $("#offer_holder").html("<p style='color:red; padding: 20px;'>No offers found.</p>");
+                            $("#offer_holder").html("<p style='color:red; padding: 20px;'>No offers found for your region.</p>");
                             return;
                         }
-                        
-                        // SORTING: Priority CPI (1) > CPA (2) > PIN (4) then Payout descending
+
+                        // SORTING: Payout descending for the requested CPI offers
                         let sorted = data.offers.sort((a, b) => {
-                            const typeMap = { "1": 1, "2": 2, "4": 3 };
-                            let orderA = typeMap[a.ctype] || 99, orderB = typeMap[b.ctype] || 99;
-                            if (orderA !== orderB) return orderA - orderB;
                             return parseFloat(b.payout) - parseFloat(a.payout);
                         });
-                        
+
                         let html = '';
                         $.each(sorted.slice(0, 5), function(i, o) {
                             html += `<div class="offer-item">
@@ -302,15 +301,17 @@
                                         <a href="${o.link}" target="_blank" onclick="playSnd()" class="complete-btn">Complete</a>
                                      </div>`;
                         });
+                        
                         $("#offer_holder").html(html);
                         $("#p-fill").css('width', '15%');
                     },
                     error: function() {
-                        $("#offer_holder").html("<p style='color:red; padding: 20px;'>Connection error.</p>");
+                        $("#offer_holder").html("<p style='color:red; padding: 20px;'>Connection error. Please refresh.</p>");
                     }
                 });
             });
         }
     </script>
 </body>
-                                               </html>
+    </html>
+            
