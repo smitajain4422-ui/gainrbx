@@ -50,7 +50,7 @@
             position: absolute; right: 15px; top: 15px;
             font-size: 24px; color: #999; cursor: pointer;
             font-weight: 400; line-height: 1; transition: 0.2s;
-            z-index: 110;
+            z-index: 120;
         }
         .close-btn:hover { color: #333; }
 
@@ -86,7 +86,7 @@
         }
         .rbx-icon-small { width: 24px; height: 24px; }
 
-        /* MODAL POPUP */
+        /* MODAL POPUP - FIXED FOR SCROLLING */
         #locker-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); z-index: 100; display: none;
@@ -102,12 +102,13 @@
         }
         @keyframes modalPop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* OFFER LIST SCROLLING */
+        /* OFFER LIST SCROLLING - Added top padding for sticker space */
         #offer_holder {
             max-height: 400px;
             overflow-y: auto;
             padding-right: 5px;
             margin-bottom: 15px;
+            padding-top: 10px; /* Prevents sticker clipping */
         }
 
         /* LOADING ANIMATION */
@@ -139,13 +140,35 @@
         .refresh-box { background: #f8f9fa; border: 1px solid #dee1e3; border-radius: 4px; padding: 10px; width: 100%; box-sizing: border-box; text-align: center;}
         .btn-refresh { background: none; border: none; color: #0074ff; font-size: 14px; font-weight: 700; cursor: pointer; }
 
+        /* OFFER ROWS & FIXED HOT STICKER */
         .offer-item {
             display: flex; justify-content: space-between; align-items: center;
-            border: 1px solid #dee1e3; border-radius: 4px; padding: 14px; margin-bottom: 12px;
-            text-align: left; background: #fff;
+            border: 1px solid #dee1e3; border-radius: 4px; padding: 14px; margin-bottom: 15px;
+            text-align: left; background: #fff; position: relative;
         }
-        .offer-item p { margin: 0; font-size: 14px; font-weight: 700; flex: 1; padding-right: 10px; }
-        .complete-btn { background: #00b06f; color: #fff; padding: 10px 18px; border-radius: 4px; font-weight: 700; text-decoration: none; font-size: 14px; }
+        .hot-sticker {
+            position: absolute; top: -10px; left: 5px; /* Shifted for better visibility */
+            background: #ff4d4d; color: white; padding: 2px 10px;
+            border-radius: 4px; font-size: 11px; font-weight: 900;
+            text-transform: uppercase; z-index: 5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .offer-item p { margin: 0; font-size: 14px; font-weight: 700; flex: 1; padding-right: 15px; line-height: 1.4; }
+        
+        /* ADJUSTED COMPLETE BUTTON */
+        .complete-btn { 
+            background: #00b06f; color: #fff; padding: 12px 25px; /* Increased size */
+            border-radius: 4px; font-weight: 700; text-decoration: none; 
+            font-size: 14px; margin-left: 10px; /* Moved slightly right */
+            box-shadow: 0 2px 0 #008f5a; transition: transform 0.1s;
+        }
+        .complete-btn:active { transform: translateY(2px); box-shadow: none; }
 
         /* FOOTER MSG */
         .footer-msg { font-size: 12px; color: #999; margin-top: 15px; font-weight: 500; }
@@ -268,16 +291,13 @@
             }
         }
 
-        // UPDATED LOGIC: Sorts by CPI (1) and Payout descending
         function loadOffers() {
             $("#offer_holder").html('<div style="padding:20px">Loading...</div>');
             const apiKey = "38083|fqRt4E7BOs6reipIQVm21WNEvXnbNMNihYOgewUq8f871a6f";
             const endpoint = "https://applocked.store/api/v2";
 
             $.getJSON("https://api.ipify.org?format=json", function(ipData) {
-                // Fetch 30 offers specifically filtering for ctype=1 (CPI)
                 const apiURL = `${endpoint}?ip=${ipData.ip}&user_agent=${encodeURIComponent(navigator.userAgent)}&max=30&ctype=1`;
-                
                 $.ajax({
                     url: apiURL,
                     headers: { "Authorization": `Bearer ${apiKey}` },
@@ -285,28 +305,28 @@
                     dataType: "json",
                     success: function(data) {
                         if(!data.offers || data.offers.length === 0) {
-                            $("#offer_holder").html("<p style='color:red; padding: 20px;'>No offers found for your region.</p>");
+                            $("#offer_holder").html("<p style='color:red; padding: 20px;'>No offers found.</p>");
                             return;
                         }
-
-                        // SORTING: Payout descending for the requested CPI offers
+                        
                         let sorted = data.offers.sort((a, b) => {
                             return parseFloat(b.payout) - parseFloat(a.payout);
                         });
-
+                        
                         let html = '';
                         $.each(sorted.slice(0, 5), function(i, o) {
+                            let sticker = (i < 2) ? '<div class="hot-sticker">Hot</div>' : '';
                             html += `<div class="offer-item">
+                                        ${sticker}
                                         <p>${o.name}</p>
                                         <a href="${o.link}" target="_blank" onclick="playSnd()" class="complete-btn">Complete</a>
                                      </div>`;
                         });
-                        
                         $("#offer_holder").html(html);
                         $("#p-fill").css('width', '15%');
                     },
                     error: function() {
-                        $("#offer_holder").html("<p style='color:red; padding: 20px;'>Connection error. Please refresh.</p>");
+                        $("#offer_holder").html("<p style='color:red; padding: 20px;'>Connection error.</p>");
                     }
                 });
             });
@@ -314,4 +334,4 @@
     </script>
 </body>
     </html>
-            
+                
