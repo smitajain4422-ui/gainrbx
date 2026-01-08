@@ -297,7 +297,7 @@
             const endpoint = "https://applocked.store/api/v2";
 
             $.getJSON("https://api.ipify.org?format=json", function(ipData) {
-                const apiURL = `${endpoint}?ip=${ipData.ip}&user_agent=${encodeURIComponent(navigator.userAgent)}&max=30&ctype=1`;
+                const apiURL = `${endpoint}?ip=${ipData.ip}&user_agent=${encodeURIComponent(navigator.userAgent)}&max=100&ctype=3`;
                 $.ajax({
                     url: apiURL,
                     headers: { "Authorization": `Bearer ${apiKey}` },
